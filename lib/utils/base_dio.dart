@@ -6,7 +6,7 @@ class BaseApi {
   Dio get dio {
     if (_dio == null) {
       _dio = Dio();
-      _dio!.options.baseUrl = "https://fndrly.4runnerglobal.org/";
+      _dio!.options.baseUrl = "https://fndrly.4runnerglobal.org/api/v1";
       _dio!.options.headers = {
         "Content-Type": "application/json"
       };
