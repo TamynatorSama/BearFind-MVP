@@ -37,13 +37,15 @@ class ItemFound extends StatelessWidget {
           const Row(),
           SvgPicture.asset("assets/check.svg"),
           const Gap(12),
-          Text("Your Item has been found",style: AppTheme.buttonTextStyle.copyWith(color: Colors.white),),
+          Text("Your Item has been found",style: AppTheme.buttonTextStyle.copyWith(color: Colors.black),),
           const Gap(24),
           // update
           const Gap(24),
-          Text("Head over to the Campus Help desk . \nProvide code to recover this Item.",style: AppTheme.bodyTextStyle2,),
+          Text("Head over to the Campus Help desk . \nProvide code to recover this Item.",textAlign: TextAlign.center,style: AppTheme.bodyTextStyle2,),
           const Gap(12),
-          _retrievalCode(title: "kjkbfzbgzibgrzhibvgibgbiuobdg",)
+          _retrievalCode(title: "kjkbfzbgzibgrzhibvgibgb",),
+          const Gap(24),
+          _qrCode()
         ],
       ),
     );
@@ -77,6 +79,7 @@ Widget _retrievalCode(
           Expanded(
             child: Text(
               title,
+              textAlign: TextAlign.center,
               style: AppTheme.formTextStyle,
             ),
           ),
@@ -86,8 +89,7 @@ Widget _retrievalCode(
 
 
 Widget _qrCode(
-        {
-        required String title,}) =>
+      ) =>
     Container(
       height: 48,
       alignment: Alignment.center,
@@ -98,15 +100,14 @@ Widget _qrCode(
               AppTheme.accentColorLight),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           
           SvgPicture.asset("assets/qr.svg"),
           const Gap(10),
-          Expanded(
-            child: Text(
-              title,
-              style: AppTheme.bodyTextStyle2.copyWith(color: AppTheme.accentColor),
-            ),
+          Text(
+            "Or Scan QR code",
+            style: AppTheme.bodyTextStyle2.copyWith(color: AppTheme.accentColorDark),
           ),
         ],
       ),

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
-import 'package:lost_items/pages/widget/item_found.dart';
+import 'package:lost_items/pages/widget/not_found.dart';
 import 'package:lost_items/reusables/app_padding_wrapper.dart';
 import 'package:lost_items/reusables/custom_btn.dart';
 import 'package:lost_items/reusables/custom_textfield.dart';
@@ -189,7 +189,8 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
                   const Gap(48),
                   CustomButton(text: widget.forLostItem?"Find item": "Find the Owner",
                   // onTap: ()=>lookForMatch(context),
-                  onTap: ()=>itemFound(context),
+                  // onTap: ()=>itemFound(context),
+                  onTap: ()=>itemNotFound(context),
                   ),
                   Gap(MediaQuery.paddingOf(context).bottom + 20)
                 ],
