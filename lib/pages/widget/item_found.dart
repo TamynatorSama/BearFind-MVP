@@ -51,7 +51,7 @@ class ItemFound extends StatelessWidget {
 }
 
 Widget _retrievalCode(
-        {bool isSelected = false,
+        {
         required String title,}) =>
     Container(
       height: 48,
@@ -78,6 +78,34 @@ Widget _retrievalCode(
             child: Text(
               title,
               style: AppTheme.formTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+
+Widget _qrCode(
+        {
+        required String title,}) =>
+    Container(
+      height: 48,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+      decoration: ShapeDecoration(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          color:
+              AppTheme.accentColorLight),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          
+          SvgPicture.asset("assets/qr.svg"),
+          const Gap(10),
+          Expanded(
+            child: Text(
+              title,
+              style: AppTheme.bodyTextStyle2.copyWith(color: AppTheme.accentColor),
             ),
           ),
         ],
