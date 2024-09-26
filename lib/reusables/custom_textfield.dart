@@ -87,7 +87,7 @@ class _CustomTextfieldState extends State<CustomTextfield> {
 
   String? defaultValidator(String? value) {
     if ((value ?? "").isEmpty) {
-      return "${widget.hintText ?? 'This'} field is required";
+      return "${widget.label ?? 'This'} field is required";
     }
     return null;
   }
@@ -99,74 +99,90 @@ class _CustomTextfieldState extends State<CustomTextfield> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      key: _textFieldKey,
-      obscureText: widget.isPassword ? isObscuredText : false,
-      readOnly: widget.isReadOnly,
-      textAlign: widget.textAlign,
-      controller: widget.controller,
-      onTap: widget.onTap,
-      maxLines: widget.maxLine ?? 1,
-      maxLength: widget.maxLength,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: widget.validator ?? defaultValidator,
-      inputFormatters: widget.inputFormatter,
-      keyboardType: widget.inputType,
-      onChanged: widget.onChanged,
-      cursorColor: Theme.of(context).textTheme.bodyLarge?.color,
-      decoration: widget.inputDecoration.copyWith(
-        labelText: widget.label,
-        labelStyle: AppTheme.bodyTextStyle2.copyWith(color:AppTheme.accentColorDark),
-          hintText: widget.hintText,
-          hintStyle: widget.customTextStyle ??
-              AppTheme.formTextStyle
-                  .copyWith(color:  AppTheme.accentColor),
-          prefixIcon: widget.prefixIcon == null
-              ? null
-              : Container(
-                  width: 55,
-                  // height: 10,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      border: widget.prefixBorders
-                          ? Border(
-                              right: BorderSide(
-                                  width: 2, color: AppTheme.accentColor))
-                          : null),
-                  child: widget.prefixIcon),
-          suffixIcon: widget.isPassword
-              ? Container(
-                  padding: const EdgeInsets.all(14),
-                  child: InkWell(
-                      onTap: updateObscuredText,
-                      child: SvgPicture.asset(
-                        isObscuredText
-                            ? "assets/svgs/eye_closed.svg"
-                            : "assets/svgs/eye_open.svg",
-                        width: 20,
-                        height: 20,
-                      )))
-              : widget.suffixIcon == null
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.label != null) ...[
+          Text(
+            widget.label!,
+            style: AppTheme.bodyTextStyle2
+                .copyWith(color: AppTheme.accentColorDark),
+          ),
+        ],
+        TextFormField(
+            key: _textFieldKey,
+            obscureText: widget.isPassword ? isObscuredText : false,
+            readOnly: widget.isReadOnly,
+            textAlign: widget.textAlign,
+            controller: widget.controller,
+            onTap: widget.onTap,
+            maxLines: widget.maxLine ?? 1,
+            maxLength: widget.maxLength,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: widget.validator ?? defaultValidator,
+            inputFormatters: widget.inputFormatter,
+            keyboardType: widget.inputType,
+            onChanged: widget.onChanged,
+            cursorColor: Theme.of(context).textTheme.bodyLarge?.color,
+            decoration: widget.inputDecoration.copyWith(
+              hintText: widget.hintText,
+              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 1,color: AppTheme.accentColor)),
+              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 1,color: AppTheme.accentColor)),
+              border: UnderlineInputBorder(borderSide: BorderSide(width: 1,color: AppTheme.accentColor)),
+              hintStyle: widget.customTextStyle ??
+                  AppTheme.formTextStyle.copyWith(color: AppTheme.accentColor),
+              prefixIcon: widget.prefixIcon == null
                   ? null
                   : Container(
-                      constraints: BoxConstraints(
-                          maxWidth: widget.suffixMaxWidth ?? 70),
+                      width: 55,
+                      // height: 10,
                       alignment: Alignment.center,
-                      margin: widget.hasDropdown? null:const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
-                          border: !widget.hasExtraBorder? Border.all(width: 0,color: Colors.transparent):Border(
-                              left: BorderSide(
-                                  width: 1, color: AppTheme.accentColor))),
-                      child: widget.suffixIcon),
-          contentPadding: widget.contentPadding ??
-              (widget.hasBorder
-                  ? const EdgeInsets.symmetric(vertical: 10,)
-                  : const EdgeInsets.all(0)),
-          
-          
-      ),
-      style: widget.customTextStyle ??
-          AppTheme.formTextStyle
+                          border: widget.prefixBorders
+                              ? Border(
+                                  right: BorderSide(
+                                      width: 2, color: AppTheme.accentColor))
+                              : null),
+                      child: widget.prefixIcon),
+              suffixIcon: widget.isPassword
+                  ? Container(
+                      padding: const EdgeInsets.all(14),
+                      child: InkWell(
+                          onTap: updateObscuredText,
+                          child: SvgPicture.asset(
+                            isObscuredText
+                                ? "assets/svgs/eye_closed.svg"
+                                : "assets/svgs/eye_open.svg",
+                            width: 20,
+                            height: 20,
+                          )))
+                  : widget.suffixIcon == null
+                      ? null
+                      : Container(
+                          constraints: BoxConstraints(
+                              maxWidth: widget.suffixMaxWidth ?? 70),
+                          alignment: Alignment.center,
+                          margin: widget.hasDropdown
+                              ? null
+                              : const EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                              border: !widget.hasExtraBorder
+                                  ? Border.all(
+                                      width: 0, color: Colors.transparent)
+                                  : Border(
+                                      left: BorderSide(
+                                          width: 1,
+                                          color: AppTheme.accentColor))),
+                          child: widget.suffixIcon),
+              contentPadding: widget.contentPadding ??
+                  (widget.hasBorder
+                      ? const EdgeInsets.symmetric(
+                          vertical: 5,
+                        )
+                      : const EdgeInsets.all(0)),
+            ),
+            style: widget.customTextStyle ?? AppTheme.formTextStyle),
+      ],
     );
   }
 }

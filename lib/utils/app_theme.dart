@@ -4,13 +4,19 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   static Color primaryColor = const Color(0xff000000);
   static Color accentColorDark = const Color(0xff6E6E6E);
-  static Color accentColor = const Color(0xffF2F2F2);
+  static Color accentColor = const Color(0xffD8D8D8);
+  static Color accentColorLight = const Color(0xffFAFAFA);
   static Color errorColor = const Color(0xffFF0000);
   static Color infoColor = const Color(0xff0266E0);
 
   static TextStyle headerTextStyle = GoogleFonts.plusJakartaSans(
     fontWeight: FontWeight.w500,
     fontSize:20,
+    color: primaryColor
+  );
+  static TextStyle headerTextStyle2 = GoogleFonts.plusJakartaSans(
+    fontWeight: FontWeight.w500,
+    fontSize:16,
     color: primaryColor
   );
 
