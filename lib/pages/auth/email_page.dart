@@ -9,6 +9,7 @@ import 'package:lost_items/reusables/custom_btn.dart';
 import 'package:lost_items/reusables/custom_textfield.dart';
 import 'package:lost_items/reusables/expandable_scrollable_widget.dart';
 import 'package:lost_items/utils/app_theme.dart';
+import 'package:lost_items/utils/input_validator.dart';
 
 class EmailWidget extends StatefulWidget {
   const EmailWidget({super.key});
@@ -41,6 +42,7 @@ class _EmailWidgetState extends State<EmailWidget> {
                 key: _form,
                 child: CustomTextfield(
                   label: "Email",
+                  validator: InputValidator.isEmail,
                   controller: emailController,
                   hintText: "e.g. Josh@mail.com",
                 ),

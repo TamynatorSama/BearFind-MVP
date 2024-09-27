@@ -200,6 +200,9 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
                                 child: _popUpMenu<String>(
                                     value: timeOfDay.period.name.toUpperCase(),
                                     onChange: (value) {
+                                      if (value.toLowerCase() ==
+                                          timeOfDay.period.name.toLowerCase())
+                                        return;
                                       timeOfDay = timeOfDay.replacing(
                                           hour: timeOfDay.hour +
                                               (value == "AM" ? -12 : 12));
@@ -266,7 +269,7 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
                         const Gap(48)
                       ],
                       Text(
-                        "Upload images of your lost item",
+                        "Upload images of your lost item ${widget.forLostItem ? "" : "*"}",
                         style: AppTheme.headerTextStyle2,
                       ),
                       const Gap(15),
@@ -347,7 +350,6 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
                         onTap: () async {
                           if (!_form.currentState!.validate()) return;
                           if (widget.forLostItem) {
-                            print(processedImages);
                             missingController.lookForItem(context,
                                 description: descriptionController.text,
                                 images: processedImages,
@@ -355,15 +357,28 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
                                 lastSeenLocation: locationController.text,
                                 tip: tipController.text);
                           } else {
+                            if (processedImages.isEmpty) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                      backgroundColor: AppTheme.primaryColor,
+                                      content: Text(
+                                        "upload an image to continue",
+                                        style: AppTheme.buttonTextStyle
+                                            .copyWith(fontSize: 12),
+                                      )));
+                              return;
+                            }
                             await FoundItemRepo()
                                 .reportFoundItem(
                                     description: descriptionController.text,
                                     lastSeenLocation: locationController.text,
                                     images: processedImages,
+                                    color: colorController.text,
                                     other: othersController.text,
-                                    dateFound: dateFound?.copyWith(
-                                        hour: timeOfDay.hour,
-                                        minute: timeOfDay.minute))
+                                    dateFound: (dateFound ?? DateTime.now())
+                                        .copyWith(
+                                            hour: timeOfDay.hour,
+                                            minute: timeOfDay.minute))
                                 .then((value) {
                               if (value.status) {
                                 itemSubmitted(context, item: value.result!);
@@ -547,7 +562,7 @@ Widget _popUpMenu<T>(
           maxWidth: 5.0 * 56.0,
         ),
         position: PopupMenuPosition.under,
-        offset: const Offset(0, -40),
+        // offset: const Offset(0, -40),
         clipBehavior: Clip.hardEdge,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),

@@ -1,5 +1,5 @@
 import 'dart:ui';
-
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -10,17 +10,22 @@ import 'package:lost_items/utils/app_theme.dart';
 
 Future<bool?> itemNotFound(BuildContext context,
     {required LostItem item}) async {
-  return await showDialog(
+  return await showAnimatedDialog(
       barrierDismissible: false,
       context: context,
+      animationType: DialogTransitionType.size,
+  curve: Curves.fastOutSlowIn,
+  duration: const Duration(seconds: 1),
       builder: (_) => BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child:  Dialog(
+              
               insetPadding: const EdgeInsets.symmetric(horizontal: 24),
               backgroundColor: Colors.white,
               child: ItemNotFound(item: item,),
             ),
           ));
+          
 }
 
 class ItemNotFound extends StatelessWidget {

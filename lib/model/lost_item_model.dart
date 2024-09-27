@@ -69,7 +69,7 @@ class LostItem {
       otherDescription: json["other_description"],
       lastSeenLocation: json["last_seen_location"],
       tip: double.tryParse(json["tip"].toString()) ?? 0.00,
-      hasTip: json["has_tip"],
+      hasTip: json["has_tip"]==true,
       itemImages:
           images.map((e) => e.toString()).toList(),
       isClaimed: json["is_claimed"],

@@ -43,7 +43,7 @@ class AuthRepository {
       String deviceInfo = "testing"}) async {
     try {
       return await BaseApi.instance.dio.post("/login", data: {
-        "email": "olukoyajoshua72@gmail.com",
+        "email": "tamilore+123test@gmail.com",
         "device_token": deviceToken,
         "device_info": deviceToken
       }).then((value) {

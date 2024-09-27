@@ -25,9 +25,9 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: 
-        // AuthRepository.instance.token.isEmpty?
+        AuthRepository.instance.token.isEmpty?
          const EmailWidget()
-        // :const ActionSelector()
+        :const ActionSelector()
         );
   }
 }
