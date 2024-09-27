@@ -347,6 +347,7 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
                         onTap: () async {
                           if (!_form.currentState!.validate()) return;
                           if (widget.forLostItem) {
+                            print(processedImages);
                             missingController.lookForItem(context,
                                 description: descriptionController.text,
                                 images: processedImages,

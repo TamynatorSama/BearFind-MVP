@@ -12,8 +12,7 @@ class FoundItemRepo {
       DateTime? dateFound,
       List<String> images = const []}) async {
     try {
-      print("asds");
-      return await BaseApi.instance.dio.post("/login", data: {
+      return await BaseApi.instance.dio.post("/secure/found-item", data: {
         "description": description,
         "other_description": other,
         "color": color,
@@ -27,6 +26,7 @@ class FoundItemRepo {
             result: LostItem.fromJson(value.data["data"]));
       });
     } on DioException catch (e) {
+      print(e.response);
       return RepositoryResult(
           message: e.response?.data["message"] ?? "failed to process request",
           status: false,

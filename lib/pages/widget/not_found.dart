@@ -76,7 +76,10 @@ class ItemNotFound extends StatelessWidget {
             ],
           ),
           const Gap(24),
-          const CustomButton(text: "Done")
+          CustomButton(text: "Done",onTap: (){
+            Navigator.popUntil(
+                  context, (settings) => Navigator.canPop(context) == false);
+          },)
         ],
       ),
     );

@@ -32,6 +32,7 @@ class MissingItemController extends ChangeNotifier {
         .reportMissingItem(
             description: description,
             color: color,
+            images: images,
             lastSeenLocation: lastSeenLocation,
             tip: tip.isEmpty ? "0" : tip)
         .then((value) {
@@ -50,7 +51,6 @@ class MissingItemController extends ChangeNotifier {
         try {
           item = value.result!;
           timeout ??= Timer.periodic(const Duration(seconds: 1), (time) {
-            print(time.tick);
             if (time.tick > 10) {
               outOfTime = true;
               notifyListeners();

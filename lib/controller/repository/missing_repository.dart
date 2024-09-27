@@ -34,6 +34,7 @@ class MissingItemRepo {
           status: false,
           result: null);
     } catch (e) {
+      print(e);
       return const RepositoryResult(
           message: "Failed to process request", status: false, result: null);
     }
