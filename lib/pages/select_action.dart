@@ -40,17 +40,23 @@ class _ActionSelectorState extends State<ActionSelector> {
               const Gap(31),
               Text("Hi ${AuthRepository.instance.username}.",
                   style: AppTheme.headerTextStyle, textAlign: TextAlign.center),
-              const Gap(12),
+              if(AuthRepository.instance.walletAmount !=null && AuthRepository.instance.walletAmount !=0 )
+              ...[const Gap(12),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
+                    decoration: ShapeDecoration(
+                      color: AppTheme.accentColorLight,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
                     padding: const EdgeInsets.all(5),
                     child: SvgPicture.asset("assets/wallet.svg"),
-                  )
-                  Text(""),
+                  ),
+                  const Gap(5),
+                  Text("${AuthRepository.instance.walletAmount??0}",style: AppTheme.headerTextStyle,),
                 ],
-              ),
+              ),],
               const Gap(34),
               Column(
                 children: [
