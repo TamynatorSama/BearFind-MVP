@@ -14,12 +14,11 @@ class SseHandler {
 
   ///GET REQUEST
   ///
-  Stream<SSEModel> createConnection({required String itemID}) {
-    String url =
+  Stream<SSEModel>? createConnection({required String itemID}) {
+    try{
+      String url =
         "${BaseApi.instance.dio.options.baseUrl}/secure/search/$itemID";
-    print(url);
-    print("Bearer ${AuthRepository.instance.token}");
-    print("asdasdsd");
+    
     return SSEClient.subscribeToSSE(
         method: SSERequestType.POST,
         url: url,
@@ -28,6 +27,9 @@ class SseHandler {
           'app_id': '7d1b5fb2-0979-465a-82ef-2194da68600d',
           'Content-Type': "application/json"
         });
+    }catch(e){
+      return null;
+    }
   }
 
   SseHandler._internal();

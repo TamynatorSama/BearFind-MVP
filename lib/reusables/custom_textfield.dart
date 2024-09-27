@@ -134,7 +134,8 @@ class _CustomTextfieldState extends State<CustomTextfield> {
               prefixIcon: widget.prefixIcon == null
                   ? null
                   : Container(
-                      width: 55,
+                      constraints: BoxConstraints(
+                              maxWidth: widget.suffixMaxWidth ?? 70),
                       // height: 10,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
