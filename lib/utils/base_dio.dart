@@ -8,7 +8,9 @@ class BaseApi {
       _dio = Dio();
       _dio!.options.baseUrl = "https://fndrly.4runnerglobal.org/api/v1";
       _dio!.options.headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        
+        "app_id": "7d1b5fb2-0979-465a-82ef-2194da68600d"
       };
 
     }

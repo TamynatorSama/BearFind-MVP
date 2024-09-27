@@ -5,9 +5,8 @@ import 'package:gap/gap.dart';
 import 'package:lost_items/utils/app_theme.dart';
 
 class CustomButton extends StatefulWidget {
-  final void Function()? onTap;
+  final Function()? onTap;
   final String text;
-  final bool isLoading;
   final String? icon;
   final Color? backgroundColor;
   final Color? textColor;
@@ -23,7 +22,6 @@ class CustomButton extends StatefulWidget {
     this.customBorder,
     this.icon,
     this.width,
-    this.isLoading = false,
     this.isDisactivated = false,
     this.backgroundColor,
     this.textColor,
@@ -35,18 +33,21 @@ class CustomButton extends StatefulWidget {
 
 class _CustomButtonState extends State<CustomButton> {
   bool tapped = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        if (widget.isDisactivated) return;
+      onTap: () async {
+        if (widget.isDisactivated||isLoading) return;
         FocusScope.of(context).unfocus();
         tapped = false;
+        isLoading = true;
         setState(() {});
-        if (widget.onTap == null) return;
 
-        widget.onTap!();
+        await widget.onTap?.call();
+        isLoading = false;
+        setState(() {});
       },
       onTapDown: (details) {
         tapped = true;
@@ -56,6 +57,9 @@ class _CustomButtonState extends State<CustomButton> {
         tapped = false;
         setState(() {});
       },
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      splashFactory: NoSplash.splashFactory,
       child: AnimatedScale(
         scale: tapped ? 0.98 : 1,
         duration: const Duration(milliseconds: 300),
@@ -71,7 +75,7 @@ class _CustomButtonState extends State<CustomButton> {
                 color: widget.isDisactivated
                     ? AppTheme.accentColorDark
                     : widget.backgroundColor ?? AppTheme.primaryColor),
-            child: widget.isLoading
+            child: isLoading
                 ? SpinKitThreeBounce(
                     size: 20,
                     itemBuilder: (context, index) => const CircleAvatar(

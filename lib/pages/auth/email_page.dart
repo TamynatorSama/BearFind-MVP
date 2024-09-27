@@ -48,16 +48,26 @@ class _EmailWidgetState extends State<EmailWidget> {
               const Gap(50),
               CustomButton(
                 text: "Get Started",
-                onTap: () {
+                onTap: () async {
                   if (!_form.currentState!.validate()) return;
-                  AuthRepository.login(email: emailController.text)
+
+                  await AuthRepository.instance
+                      .login(email: emailController.text)
                       .then((value) {
                     if (value.status) {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const ActionSelector()));
+                      return;
                     }
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: AppTheme.primaryColor,
+                        content: Text(
+                          value.message,
+                          style:
+                              AppTheme.buttonTextStyle.copyWith(fontSize: 12),
+                        )));
                   });
                 },
               ),

@@ -6,7 +6,7 @@ import 'package:lost_items/utils/app_theme.dart';
 
 Future<bool?> lookForMatch(BuildContext context)async{
   return await showDialog(
-    barrierDismissible: false,
+    // barrierDismissible: false,
     context: context, builder: (_)=>BackdropFilter(
     filter: ImageFilter.blur(
       sigmaX: 5,

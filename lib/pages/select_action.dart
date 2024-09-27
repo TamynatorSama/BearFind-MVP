@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:lost_items/controller/repository/auth_repo.dart';
 import 'package:lost_items/pages/found_item_info_page.dart';
 import 'package:lost_items/reusables/app_padding_wrapper.dart';
 import 'package:lost_items/reusables/expandable_scrollable_widget.dart';
@@ -26,7 +27,7 @@ class _ActionSelectorState extends State<ActionSelector> {
               Gap(MediaQuery.paddingOf(context).top + 40),
               SvgPicture.asset("assets/logo_new.svg"),
               const Gap(31),
-              Text("Hi Josh.",
+              Text("Hi ${AuthRepository.instance.username}.",
                   style: AppTheme.headerTextStyle, textAlign: TextAlign.center),
               const Gap(34),
               Column(
