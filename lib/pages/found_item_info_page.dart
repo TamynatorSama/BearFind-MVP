@@ -262,6 +262,7 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
                           CustomTextfield(
                             label: "Tip",
                             controller: tipController,
+                            prefixIcon: Text("\$",style:AppTheme.formTextStyle),
                             inputFormatter: [decimalFormatter],
                             inputType: TextInputType.number,
                           ),

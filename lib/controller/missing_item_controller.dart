@@ -7,6 +7,7 @@ import 'package:lost_items/controller/repository/missing_repository.dart';
 import 'package:lost_items/model/lost_item_model.dart';
 import 'package:lost_items/pages/widget/item_found.dart';
 import 'package:lost_items/pages/widget/looking_for_match.dart';
+import 'package:lost_items/pages/widget/not_found.dart';
 import 'package:lost_items/utils/app_theme.dart';
 import 'package:lost_items/utils/sse_handler.dart';
 
@@ -16,6 +17,7 @@ class MissingItemController extends ChangeNotifier {
   StreamSubscription<SSEModel>? sseStream;
   Timer? timeout;
   bool outOfTime = false;
+  String? code;
   LostItem? item;
 
   final MissingItemRepo _repo = MissingItemRepo();
@@ -53,7 +55,7 @@ class MissingItemController extends ChangeNotifier {
             if (time.tick > 10) {
               outOfTime = true;
               notifyListeners();
-              itemFound(context,item: item!);
+              itemNotFound(context, item: item!);
               close();
             }
           });
@@ -61,7 +63,7 @@ class MissingItemController extends ChangeNotifier {
               SseHandler().createConnection(itemID: item?.itemId ?? "");
           sseStream = stream.listen((data) => handleStream(data, callback: () {
                 Navigator.pop(context);
-                itemFound(context,item: item!);
+                itemFound(context, item: item!,code: code);
               }));
         } catch (e) {
           Navigator.pop(context);
@@ -80,9 +82,15 @@ class MissingItemController extends ChangeNotifier {
     if (value.data != null) {
       final possibleJson = jsonDecode(value.data!);
       print(possibleJson);
+      code = possibleJson["data"]["is_found"];
       notifyListeners();
-      item = LostItem.fromJson(possibleJson["data"]["item_info"]);
-      if (possibleJson["data"]["is_found"] && sseStream != null) {
+      try {
+        item = LostItem.fromJson(possibleJson["data"]["item_info"]);
+        code = possibleJson["data"]["claim_code"];
+      } catch (e) {
+        print(e);
+      }
+      if (possibleJson["data"]["is_found"] == true && sseStream != null) {
         callback?.call();
         close();
       }
