@@ -13,9 +13,9 @@ Future<bool?> itemNotFound(BuildContext context,
   return await showAnimatedDialog(
       barrierDismissible: false,
       context: context,
-      animationType: DialogTransitionType.size,
-  curve: Curves.fastOutSlowIn,
-  duration: const Duration(seconds: 1),
+      animationType: DialogTransitionType.slideFromBottom,
+      curve: Curves.fastOutSlowIn,
+      duration: const Duration(milliseconds: 500),
       builder: (_) => BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child:  Dialog(

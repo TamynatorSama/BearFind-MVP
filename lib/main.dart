@@ -19,11 +19,11 @@ class MyApp extends StatelessWidget {
         title: 'Bear Find',
         debugShowMaterialGrid: false,
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
-          useMaterial3: true,
-        ),
+        // theme: ThemeData(
+        //   scaffoldBackgroundColor: Colors.white,
+        //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.black,primary: Colors.black),
+        //   useMaterial3: true,
+        // ),
         home: 
         AuthRepository.instance.token.isEmpty?
          const EmailWidget()

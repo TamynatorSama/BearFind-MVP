@@ -7,7 +7,6 @@ import 'package:lost_items/controller/repository/missing_repository.dart';
 import 'package:lost_items/model/lost_item_model.dart';
 import 'package:lost_items/pages/widget/item_found.dart';
 import 'package:lost_items/pages/widget/looking_for_match.dart';
-import 'package:lost_items/pages/widget/not_found.dart';
 import 'package:lost_items/utils/app_theme.dart';
 import 'package:lost_items/utils/sse_handler.dart';
 
@@ -54,7 +53,7 @@ class MissingItemController extends ChangeNotifier {
             if (time.tick > 10) {
               outOfTime = true;
               notifyListeners();
-              itemNotFound(context,item: item!);
+              itemFound(context,item: item!);
               close();
             }
           });
@@ -62,7 +61,7 @@ class MissingItemController extends ChangeNotifier {
               SseHandler().createConnection(itemID: item?.itemId ?? "");
           sseStream = stream.listen((data) => handleStream(data, callback: () {
                 Navigator.pop(context);
-                itemFound(context);
+                itemFound(context,item: item!);
               }));
         } catch (e) {
           Navigator.pop(context);

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthRepository {
   String _username = "";
   String _token = "";
+  double? _walletAmount = 0;
   late SharedPreferences _preferences;
 
   AuthRepository._privateConstructor();
@@ -20,7 +21,7 @@ class AuthRepository {
 
   String get token => _token;
   String get username => _username;
-
+double? get walletAmount => _walletAmount;
   set username(String value) {
     _username = value;
     _preferences.setString("username", value);
@@ -31,10 +32,16 @@ class AuthRepository {
     _preferences.setString("token", value);
   }
 
+ set walletAmount(double? value) {
+    _walletAmount = value;
+    _preferences.setString("wallet",value.toString());
+  } 
+
   Future init() async {
     _preferences = await SharedPreferences.getInstance();
     _token = _preferences.getString("token") ?? "";
     _username = _preferences.getString("username") ?? "";
+  walletAmount = double.tryParse(_preferences.getString("wallet") ?? "");
   }
 
   Future<RepositoryResult<List>> login(

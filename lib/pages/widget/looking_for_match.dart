@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:gap/gap.dart';
 import 'package:lost_items/utils/app_theme.dart';
@@ -32,10 +31,11 @@ class _LookingForMatchState extends State<LookingForMatch> {
   double scale = 1.5;
   @override
   void initState() {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      scale = 1.3;
-      setState(() {});
-    });
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+                      
+    //   scale = 1.3;    
+    //   setState(() {});
+    // });
     super.initState();
   }
 
@@ -43,34 +43,24 @@ class _LookingForMatchState extends State<LookingForMatch> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(30.0),
-      child: AnimatedScale(
-        scale: scale,
-        duration: const Duration(milliseconds: 900),
-        curve: Curves.easeInOutExpo,
-        onEnd: () {
-          scale == 1.5
-              ? 
-              scale= 1.3
-              : scale = 1.5;
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset("assets/search.png"),
-            const Gap(24),
-            Text(
-              "Finding  a match",
-              style: AppTheme.bodyTextStyle2,
-            ),
-            const Gap(24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset("assets/search.png"),
+          const Gap(24),
+          Text(
+            "Finding  a match",
+                style: AppTheme.bodyTextStyle2,
+              ),
+            Gap(24),
             CircularProgressIndicator(
-              color: AppTheme.accentColor,
-              strokeWidth: 3,
-            )
-          ],
-        ),
+                color: AppTheme.accentColor,
+            strokeWidth: 3,
+          )
+        ],
       ),
     );
   }
 }
+    

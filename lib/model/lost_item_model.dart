@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:lost_items/model/item_model.dart';
+
 class LostItem {
   LostItem({
     required this.userId,
@@ -60,7 +62,7 @@ class LostItem {
     if (json["item_images"].runtimeType.toString() == "String") {
       images = jsonDecode(json["item_images"]) as List;
     } else {
-      images = json["item_images"];
+      images = json["item_images"] ?? [];
     }
     return LostItem(
       userId: json["user_id"].toString(),
@@ -69,14 +71,25 @@ class LostItem {
       otherDescription: json["other_description"],
       lastSeenLocation: json["last_seen_location"],
       tip: double.tryParse(json["tip"].toString()) ?? 0.00,
-      hasTip: json["has_tip"]==true,
-      itemImages:
-          images.map((e) => e.toString()).toList(),
+      hasTip: json["has_tip"] == true,
+      itemImages: images.map((e) => e.toString()).toList(),
       isClaimed: json["is_claimed"],
       status: json["status"],
       createdAt: DateTime.tryParse(json["created_at"] ?? ""),
     );
   }
+  factory LostItem.fromOtherInfo(OtherInfo info) => LostItem(
+      userId: info.userId,
+      itemId: info.itemId,
+      description: info.description ?? "",
+      otherDescription: info.otherDescription,
+      lastSeenLocation: info.lastSeenLocation,
+      tip: info.tip,
+      hasTip: info.hasTip,
+      itemImages: info.itemImages,
+      isClaimed: info.isClaimed == true ? 1 : 0,
+      status: info.status == true ? 1 : 0,
+      createdAt: info.lastSeen);
 
   Map<String, dynamic> toJson() => {
         "user_id": userId,

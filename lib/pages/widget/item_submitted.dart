@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:lost_items/model/lost_item_model.dart';
@@ -8,23 +9,30 @@ import 'package:lost_items/reusables/custom_btn.dart';
 import 'package:lost_items/utils/app_theme.dart';
 
 Future<bool?> itemSubmitted(BuildContext context,
-    {required LostItem item}) async {
-  return await showDialog(
+    {required LostItem item, bool forThanks = false}) async {
+  return await showAnimatedDialog(
       barrierDismissible: false,
+      animationType: DialogTransitionType.rotate3D,
+      curve: Curves.fastOutSlowIn,
+      duration: const Duration(milliseconds: 500),
       context: context,
       builder: (_) => BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: Dialog(
               insetPadding: const EdgeInsets.symmetric(horizontal: 24),
               backgroundColor: Colors.white,
-              child: ItemFound(item: item,),
+              child: ItemFound(
+                item: item,
+                forThanks: forThanks,
+              ),
             ),
           ));
 }
 
 class ItemFound extends StatelessWidget {
   final LostItem item;
-  const ItemFound({super.key, required this.item});
+  final bool forThanks;
+  const ItemFound({super.key, required this.item,this.forThanks = false});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +46,7 @@ class ItemFound extends StatelessWidget {
           SvgPicture.asset("assets/check.svg"),
           const Gap(12),
           Text(
-            "Item has been Submitted",
+            forThanks? "Owner has been found":"Item has been Submitted",
             style: AppTheme.buttonTextStyle.copyWith(color: Colors.black),
           ),
           if (item.itemImages.isNotEmpty) ...[
@@ -57,10 +65,9 @@ class ItemFound extends StatelessWidget {
                       ))),
             ),
           ],
-          
           const Gap(24),
           Text(
-            "Thanks for being helpful.We hope to find the owner soon  enough. ",
+            forThanks?"Thanks for Helping!": "Thanks for being helpful.We hope to find the owner soon  enough. ",
             textAlign: TextAlign.center,
             style: AppTheme.bodyTextStyle2,
           ),
@@ -77,60 +84,3 @@ class ItemFound extends StatelessWidget {
     );
   }
 }
-
-Widget _retrievalCode({
-  required String title,
-}) =>
-    Container(
-      height: 48,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: ShapeDecoration(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          color: AppTheme.accentColorLight),
-      child: Row(
-        children: [
-          Container(
-            height: double.maxFinite,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                color: Colors.white),
-            child: SvgPicture.asset("assets/copy.svg"),
-          ),
-          const Gap(10),
-          Expanded(
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: AppTheme.formTextStyle,
-            ),
-          ),
-        ],
-      ),
-    );
-
-Widget _qrCode() => Container(
-      height: 48,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: ShapeDecoration(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          color: AppTheme.accentColorLight),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset("assets/qr.svg"),
-          const Gap(10),
-          Text(
-            "Or Scan QR code",
-            style: AppTheme.bodyTextStyle2
-                .copyWith(color: AppTheme.accentColorDark),
-          ),
-        ],
-      ),
-    );
