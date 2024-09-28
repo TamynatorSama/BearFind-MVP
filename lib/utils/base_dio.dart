@@ -39,7 +39,7 @@ class UnAuthorizedInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    if (err.response?.statusCode == 401) {
+    if (err.response?.statusCode == 401 && err.response?.data.toString().toLowerCase() == "unauthorized") {
       // Shared
       await Navigator.pushAndRemoveUntil(
           MyAppState.navKey.currentContext!,

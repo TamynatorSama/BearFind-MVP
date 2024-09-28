@@ -21,7 +21,7 @@ class AuthRepository {
 
   String get token => _token;
   String get username => _username;
-double? get walletAmount => _walletAmount;
+  double? get walletAmount => _walletAmount;
   set username(String value) {
     _username = value;
     _preferences.setString("username", value);
@@ -32,25 +32,26 @@ double? get walletAmount => _walletAmount;
     _preferences.setString("token", value);
   }
 
- set walletAmount(double? value) {
+  set walletAmount(double? value) {
     _walletAmount = value;
-    _preferences.setString("wallet",value.toString());
-  } 
+    _preferences.setString("wallet", value.toString());
+  }
 
   Future init() async {
     _preferences = await SharedPreferences.getInstance();
     _token = _preferences.getString("token") ?? "";
     _username = _preferences.getString("username") ?? "";
-  walletAmount = double.tryParse(_preferences.getString("wallet") ?? "");
+    walletAmount = double.tryParse(_preferences.getString("wallet") ?? "");
   }
 
   Future<RepositoryResult<List>> login(
       {required String email,
       String deviceToken = "testing",
       String deviceInfo = "testing"}) async {
+    print("asdakjsdlajdlas");
     try {
       return await BaseApi.instance.dio.post("/login", data: {
-        "email": "tamilore+123test@gmail.com",
+        "email": email,
         "device_token": deviceToken,
         "device_info": deviceToken
       }).then((value) {

@@ -63,6 +63,7 @@ class MissingItemController extends ChangeNotifier {
               SseHandler().createConnection(itemID: item?.itemId ?? "");
           if (stream == null) {
             Navigator.pop(context);
+            close();
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: AppTheme.primaryColor,
                 content: Text(
@@ -81,11 +82,13 @@ class MissingItemController extends ChangeNotifier {
                               AppTheme.buttonTextStyle.copyWith(fontSize: 12),
                         )));
                   }, callback: () {
+                    close();
                     Navigator.pop(context);
                     itemFound(context, item: item!, code: code);
                   }));
         } catch (e) {
           Navigator.pop(context);
+          close();
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               backgroundColor: AppTheme.primaryColor,
               content: Text(
@@ -112,7 +115,6 @@ class MissingItemController extends ChangeNotifier {
       }
       if (possibleJson["data"]["is_found"] == true && sseStream != null) {
         callback?.call();
-        close();
       }
     }
   }

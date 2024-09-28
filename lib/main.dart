@@ -31,8 +31,11 @@ class MyAppState extends State<MyApp> {
         //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.black,primary: Colors.black),
         //   useMaterial3: true,
         // ),
-        home: AuthRepository.instance.token.isEmpty
-            ? const EmailWidget()
-            : const ActionSelector());
+        home:
+         AuthRepository.instance.token.isEmpty
+            ? 
+            const EmailWidget()
+            : const ActionSelector()
+            );
   }
 }
