@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "595560811331",
+    "project_id": "beair-hunt",
+    "storage_bucket": "beair-hunt.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:595560811331:android:41fc42540c8c783a757df6",
+        "android_client_info": {
+          "package_name": "com.example.lost_items"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlhl4HsGsZUC3RKrNgKuIZUZoL5TXXalQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:lost_items/model/repository_result.dart';
 import 'package:lost_items/utils/base_dio.dart';
+import 'package:lost_items/utils/push_noti_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository {
@@ -45,15 +46,12 @@ class AuthRepository {
   }
 
   Future<RepositoryResult<List>> login(
-      {required String email,
-      String deviceToken = "testing",
-      String deviceInfo = "testing"}) async {
-    print("asdakjsdlajdlas");
+      {required String email,}) async {
     try {
       return await BaseApi.instance.dio.post("/login", data: {
         "email": email,
-        "device_token": deviceToken,
-        "device_info": deviceToken
+        "device_token": await PushNotificationHandler.generateDeviceToken(),
+        "device_info": await deviceInfo()
       }).then((value) {
         username = value.data["data"]["username"];
         token = value.data["data"]["token"];
