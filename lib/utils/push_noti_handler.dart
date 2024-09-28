@@ -14,7 +14,7 @@ Future<String> deviceInfo()async{
     });
   }
 
-  
+
 class PushNotificationHandler {
   static late FirebaseMessaging messaging;
   static late Stream<RemoteMessage> foregroundMessages;
@@ -33,10 +33,10 @@ class PushNotificationHandler {
   @pragma('vm:entry-point')
   static Future<void> _fcmBackgroundHandler(RemoteMessage message) async {
     print("onBackgroundMessage: ${message.data}");
-    await handleNotifications(payload: message.data);
+    // await handleNotifications(payload: message.data);
   }
 
-  //handle fcm notification when app is open
+
   static Future<void> _fcmForegroundHandler(RemoteMessage message) async {
     print("onMessage: ${message.data}");
     await handleNotifications(payload: message.data);
@@ -44,9 +44,9 @@ class PushNotificationHandler {
 
   static handleNotifications({required Map<String, dynamic> payload}) async {
     // await AwesomeNotificationsHelper.showNotification(
-    //   title: payload["topic"] ?? "Login Successful",
+    //   title: payload["topic"] ?? "",
     //   body:
-    //       payload["message"] ?? "You have just logged in to your MonieTracka acct",
+    //       payload["message"] ??"",
     //   // bigPicture: payload["image"] ?? "",
     //   // payload: Map<String, String>.from(payload),
     // );
