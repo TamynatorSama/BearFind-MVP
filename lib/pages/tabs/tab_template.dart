@@ -50,44 +50,38 @@ class _ItemTabTemplateState extends State<ItemTabTemplate> {
               [];
           return pendingModel.isEmpty
               ? emptyBudget()
-              : RefreshIndicator(
-                  onRefresh: () async => await listItemController.fetchAllItems(
-                      context,
-                      forFoundItems: widget.forFoundItem,
-                      isRefresh: false),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: ListView.separated(
-                            padding: EdgeInsets.only(
-                                top: 24,
-                                bottom:
-                                    MediaQuery.paddingOf(context).bottom + 10),
-                            controller: listController,
-                            physics: const ClampingScrollPhysics(),
-                            separatorBuilder: (context, index) => const Gap(20),
-                            itemCount: pendingModel.length,
-                            itemBuilder: (context, index) => _list(context,
-                                item: pendingModel[index],
-                                forFoundItem: widget.forFoundItem)),
-                      ),
-                      if (listItemController.paginating)
-                        Column(
-                          children: [
-                            const Gap(20),
-                            SpinKitThreeBounce(
-                              size: 20,
-                              itemBuilder: (context, index) => CircleAvatar(
-                                radius: 1,
-                                backgroundColor: AppTheme.primaryColor,
-                              ),
-                            ),
-                            const Gap(20),
-                          ],
-                        )
-                    ],
+              : Column(
+                children: [
+                  Expanded(
+                    child: ListView.separated(
+                        padding: EdgeInsets.only(
+                            top: 24,
+                            bottom:
+                                MediaQuery.paddingOf(context).bottom + 10),
+                        controller: listController,
+                        physics: const ClampingScrollPhysics(),
+                        separatorBuilder: (context, index) => const Gap(20),
+                        itemCount: pendingModel.length,
+                        itemBuilder: (context, index) => _list(context,
+                            item: pendingModel[index],
+                            forFoundItem: widget.forFoundItem)),
                   ),
-                );
+                  if (listItemController.paginating)
+                    Column(
+                      children: [
+                        const Gap(20),
+                        SpinKitThreeBounce(
+                          size: 20,
+                          itemBuilder: (context, index) => CircleAvatar(
+                            radius: 1,
+                            backgroundColor: AppTheme.primaryColor,
+                          ),
+                        ),
+                        const Gap(20),
+                      ],
+                    )
+                ],
+              );
         });
   }
 }
@@ -124,8 +118,7 @@ Widget _list(BuildContext context,
           }
         }
       },
-      child: Container(
-        child: Row(
+      child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -145,22 +138,26 @@ Widget _list(BuildContext context,
                 ),
               ],
             ),
-            if ((item.canClaim || item.isFound) &&
-                item.otherInfo.isClaimed == false)
-              Row(
+            (item.canClaim || item.isFound) &&
+                item.otherInfo.isClaimed == false?
+              const Row(
                 children: [
-                  if (item.canClaim && item.otherInfo.isClaimed == false)
-                    Text(
-                      "claim",
+                  // if (item.canClaim && item.otherInfo.isClaimed == false)
+                  //   Text(
+                  //     "claim",
+                  //     style: AppTheme.buttonTextStyle
+                  //         .copyWith(fontSize: 12, color: AppTheme.primaryColor),
+                  //   ),
+                  Icon(Icons.keyboard_arrow_right_rounded),
+                ],
+              ):Text(
+                      !forFoundItem && !item.isFound? "Searching...": "Unclaimed",
                       style: AppTheme.buttonTextStyle
                           .copyWith(fontSize: 12, color: AppTheme.primaryColor),
                     ),
-                  const Icon(Icons.keyboard_arrow_right_rounded),
-                ],
-              )
           ],
         ),
-      ),
+      
     );
 
 Widget emptyBudget() => ExpandableScrollableWidget(
