@@ -50,8 +50,8 @@ class AuthRepository {
     try {
       return await BaseApi.instance.dio.post("/login", data: {
         "email": email,
-        "device_token": await PushNotificationHandler.generateDeviceToken(),
-        "device_info": await deviceInfo()
+        "device_token": "await PushNotificationHandler.generateDeviceToken()",
+        "device_info": "await deviceInfo()"
       }).then((value) {
         username = value.data["data"]["username"];
         token = value.data["data"]["token"];
