@@ -7,7 +7,7 @@ import 'package:lost_items/pages/select_action.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-//  await AuthRepository.instance.init(); 
+ await AuthRepository.instance.init(); 
 //   await Firebase.initializeApp(
 //   options: DefaultFirebaseOptions.currentPlatform,
 // );
