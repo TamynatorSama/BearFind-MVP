@@ -24,17 +24,18 @@ class _ItemListingState extends State<ItemListing>
   @override
   void initState() {
     tabController = TabController(length: 2, vsync: this);
-    SchedulerBinding.instance.addPostFrameCallback((_) async{
-      if (listItemController.foundItems != null) {
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      
+      if (listItemController.foundItems == null) {
         isLoading = true;
         setState(() {});
       }
       await Future.wait([
-        listItemController.fetchAllItems(context),
-        listItemController.fetchAllItems(context, forFoundItems: false),
+        listItemController.fetchAllItems(context,isRefresh: true),
+        listItemController.fetchAllItems(context, forFoundItems: false,isRefresh: true),
       ]);
       isLoading = false;
-        setState(() {});
+      setState(() {});
     });
     super.initState();
   }
@@ -43,74 +44,81 @@ class _ItemListingState extends State<ItemListing>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: AppPaddingWrapper(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Gap(MediaQuery.paddingOf(context).top + 40),
-            InkWell(
-              onTap: () => Navigator.pop(context),
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              splashFactory: NoSplash.splashFactory,
-              child: Transform.rotate(
-                  angle: pi,
-                  child: const Icon(
-                    Icons.arrow_right_alt_rounded,
-                    size: 28,
-                  )),
-            ),
-            const Gap(20),
-            Container(
-              padding: const EdgeInsets.all(5),
-              height: 45,
-              width: double.maxFinite,
-              decoration: BoxDecoration(
-                  color: AppTheme.accentColorLight,
-                  borderRadius: BorderRadius.circular(6)),
-              child: TabBar(
-                  dividerColor: Colors.transparent,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  labelStyle: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Colors.white),
-                  unselectedLabelStyle: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: AppTheme.accentColorDark),
-                  indicator: BoxDecoration(
-                    color: AppTheme.primaryColor,
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  controller: tabController,
-                  tabs: const [
-                    Tab(
-                      text: "Missing Items",
+      body: RefreshIndicator(
+                  onRefresh: () async => Future.wait([
+        listItemController.fetchAllItems(context,isRefresh: true),
+        listItemController.fetchAllItems(context, forFoundItems: false,isRefresh: true),
+      ]),
+        child: AppPaddingWrapper(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Gap(MediaQuery.paddingOf(context).top + 40),
+              InkWell(
+                onTap: () => Navigator.pop(context),
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                splashFactory: NoSplash.splashFactory,
+                child: Transform.rotate(
+                    angle: pi,
+                    child: const Icon(
+                      Icons.arrow_right_alt_rounded,
+                      size: 28,
+                    )),
+              ),
+              const Gap(20),
+              Container(
+                padding: const EdgeInsets.all(5),
+                height: 45,
+                width: double.maxFinite,
+                decoration: BoxDecoration(
+                    color: AppTheme.accentColorLight,
+                    borderRadius: BorderRadius.circular(6)),
+                child: TabBar(
+                    dividerColor: Colors.transparent,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelStyle: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Colors.white),
+                    unselectedLabelStyle: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: AppTheme.accentColorDark),
+                    indicator: BoxDecoration(
+                      color: AppTheme.primaryColor,
+                      borderRadius: BorderRadius.circular(7),
                     ),
-                    Tab(
-                      text: "Reported items",
-                    ),
-                  ]),
-            ),
-            Expanded(
-              child: isLoading
-                ? Center(
-                  child: SpinKitThreeBounce(
-                      size: 30,
-                      itemBuilder: (context, index) => CircleAvatar(
-                        radius: 5,
-                        backgroundColor: AppTheme.primaryColor,
+                    controller: tabController,
+                    tabs: const [
+                      Tab(
+                        text: "Missing Items",
                       ),
-                    ),
-                ): TabBarView(controller: tabController, children: const [
-                ItemTabTemplate(
-                  forFoundItem: false,
-                ),
-                ItemTabTemplate(),
-              ]),
-            ),
-          ],
+                      Tab(
+                        text: "Reported items",
+                      ),
+                    ]),
+              ),
+              Expanded(
+                child: isLoading
+                    ? Center(
+                        child: SpinKitThreeBounce(
+                          size: 30,
+                          itemBuilder: (context, index) => CircleAvatar(
+                            radius: 5,
+                            backgroundColor: AppTheme.primaryColor,
+                          ),
+                        ),
+                      )
+                    : TabBarView(controller: tabController, children: const [
+                        ItemTabTemplate(
+                          forFoundItem: false,
+                        ),
+                        ItemTabTemplate(),
+                      ]),
+              ),
+            ],
+          ),
         ),
       ),
     );

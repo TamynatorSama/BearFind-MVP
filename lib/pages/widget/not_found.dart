@@ -9,28 +9,40 @@ import 'package:lost_items/reusables/custom_switch.dart';
 import 'package:lost_items/utils/app_theme.dart';
 
 Future<bool?> itemNotFound(BuildContext context,
-    {required LostItem item}) async {
+    {required LostItem item, bool fromList = false}) async {
   return await showAnimatedDialog(
       barrierDismissible: false,
       context: context,
       animationType: DialogTransitionType.slideFromBottom,
       curve: Curves.fastOutSlowIn,
       duration: const Duration(milliseconds: 500),
-      builder: (_) => BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child:  Dialog(
-              
-              insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-              backgroundColor: Colors.white,
-              child: ItemNotFound(item: item,),
+      builder: (_) => GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () => fromList
+                ? Navigator.pop(context)
+                : Navigator.popUntil(
+                    context, (settings) => Navigator.canPop(context) == false),
+        child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: GestureDetector(
+                onTap: () {},
+                child: Dialog(
+                  insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  backgroundColor: Colors.white,
+                  child: ItemNotFound(
+                    fromList: fromList,
+                    item: item,
+                  ),
+                ),
+              ),
             ),
-          ));
-          
+      ));
 }
 
 class ItemNotFound extends StatelessWidget {
   final LostItem item;
-  const ItemNotFound({super.key,required this.item});
+  final bool fromList;
+  const ItemNotFound({super.key, required this.item, this.fromList = false});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +54,6 @@ class ItemNotFound extends StatelessWidget {
         children: [
           const Row(),
           SvgPicture.asset("assets/cancel.svg"),
-          
           if (item.itemImages.isNotEmpty) ...[
             const Gap(12),
             Container(
@@ -59,7 +70,6 @@ class ItemNotFound extends StatelessWidget {
                       ))),
             ),
           ],
-          
           const Gap(24),
           Text(
             "We can’t find your item at the moment",
@@ -81,10 +91,17 @@ class ItemNotFound extends StatelessWidget {
             ],
           ),
           const Gap(24),
-          CustomButton(text: "Done",onTap: (){
-            Navigator.popUntil(
+          CustomButton(
+            text: "Done",
+            onTap: () {
+              if (fromList) {
+                Navigator.pop(context);
+                return;
+              }
+              Navigator.popUntil(
                   context, (settings) => Navigator.canPop(context) == false);
-          },)
+            },
+          )
         ],
       ),
     );

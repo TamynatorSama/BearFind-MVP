@@ -8,6 +8,8 @@ import 'package:lost_items/model/item_model.dart';
 import 'package:lost_items/model/lost_item_model.dart';
 import 'package:lost_items/pages/widget/input_code.dart';
 import 'package:lost_items/pages/widget/item_found.dart';
+import 'package:lost_items/pages/widget/item_submitted.dart';
+import 'package:lost_items/pages/widget/not_found.dart';
 import 'package:lost_items/reusables/expandable_scrollable_widget.dart';
 import 'package:lost_items/utils/app_theme.dart';
 
@@ -97,18 +99,29 @@ Widget _list(BuildContext context,
       highlightColor: Colors.transparent,
       splashFactory: NoSplash.splashFactory,
       onTap: () {
-        if ((item.canClaim || item.isFound) &&
-            item.otherInfo.isClaimed == false) {
+        if (item.canClaim || item.isFound) {
           if (item.isFound) {
-            
             itemFound(context,
-            fromList: true,
-            code: item.claimCode,
+                fromList: true,
+                code: item.claimCode,
                 item: LostItem.fromOtherInfo(item.otherInfo));
-          }else{
-            inputCode(context, item: LostItem.fromOtherInfo(item.otherInfo));
+          } else {
+            if (item.otherInfo.isClaimed == false) {
+              inputCode(context, item: LostItem.fromOtherInfo(item.otherInfo));
+            } else {
+              itemSubmitted(context,
+                  item: LostItem.fromOtherInfo(item.otherInfo),
+                  forThanks: true);
+            }
           }
-          
+        } else {
+          if (forFoundItem) {
+            itemSubmitted(context,
+                item: LostItem.fromOtherInfo(item.otherInfo),forList: true);
+          } else {
+            itemNotFound(context,
+                item: LostItem.fromOtherInfo(item.otherInfo), fromList: true);
+          }
         }
       },
       child: Container(

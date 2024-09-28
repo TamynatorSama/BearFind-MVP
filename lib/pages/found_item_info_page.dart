@@ -127,6 +127,7 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
                       CustomTextfield(
                         label: "Describe your item",
                         controller: descriptionController,
+                      validator: widget.forLostItem ?null:(val)=>null,
                       ),
                       // ],
                       if (!widget.forLostItem) ...[
@@ -343,59 +344,64 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
                       ),
 
                       const Gap(48),
-                      CustomButton(
-                        text:
-                            widget.forLostItem ? "Find item" : "Find the Owner",
-                        // onTap: ()=>lookForMatch(context),
-                        // onTap: ()=>itemFound(context),
-                        onTap: () async {
-                          if (!_form.currentState!.validate()) return;
-                          if (widget.forLostItem) {
-                            missingController.lookForItem(context,
-                                description: descriptionController.text,
-                                images: processedImages,
-                                color: colorController.text,
-                                lastSeenLocation: locationController.text,
-                                tip: tipController.text);
-                          } else {
-                            if (processedImages.isEmpty) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                      backgroundColor: AppTheme.primaryColor,
-                                      content: Text(
-                                        "upload an image to continue",
-                                        style: AppTheme.buttonTextStyle
-                                            .copyWith(fontSize: 12),
-                                      )));
-                              return;
-                            }
-                            await FoundItemRepo()
-                                .reportFoundItem(
+                      AnimatedBuilder(
+                        animation: imageUploader,
+                        builder: (context, _) => CustomButton(
+                            text:
+                                widget.forLostItem ? "Find item" : "Find the Owner",
+                            // onTap: ()=>lookForMatch(context),
+                            isDisactivated: imageUploader.percentage !=0,
+                            // onTap: ()=>itemFound(context),
+                            onTap: () async {
+                              if (!_form.currentState!.validate()) return;
+                              if (widget.forLostItem) {
+                                missingController.lookForItem(context,
                                     description: descriptionController.text,
-                                    lastSeenLocation: locationController.text,
                                     images: processedImages,
                                     color: colorController.text,
-                                    other: othersController.text,
-                                    dateFound: (dateFound ?? DateTime.now())
-                                        .copyWith(
-                                            hour: timeOfDay.hour,
-                                            minute: timeOfDay.minute))
-                                .then((value) {
-                              if (value.status) {
-                                itemSubmitted(context, item: value.result!);
-                                return;
+                                    lastSeenLocation: locationController.text,
+                                    tip: tipController.text);
+                              } else {
+                                if (processedImages.isEmpty) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                          backgroundColor: AppTheme.primaryColor,
+                                          content: Text(
+                                            "upload an image to continue",
+                                            style: AppTheme.buttonTextStyle
+                                                .copyWith(fontSize: 12),
+                                          )));
+                                  return;
+                                }
+                                await FoundItemRepo()
+                                    .reportFoundItem(
+                                        description: descriptionController.text,
+                                        lastSeenLocation: locationController.text,
+                                        images: processedImages,
+                                        color: colorController.text,
+                                        other: othersController.text,
+                                        dateFound: (dateFound ?? DateTime.now())
+                                            .copyWith(
+                                                hour: timeOfDay.hour,
+                                                minute: timeOfDay.minute))
+                                    .then((value) {
+                                  if (value.status) {
+                                    itemSubmitted(context, item: value.result!);
+                                    return;
+                                  }
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                          backgroundColor: AppTheme.primaryColor,
+                                          content: Text(
+                                            value.message,
+                                            style: AppTheme.buttonTextStyle
+                                                .copyWith(fontSize: 12),
+                                          )));
+                                });
                               }
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                      backgroundColor: AppTheme.primaryColor,
-                                      content: Text(
-                                        value.message,
-                                        style: AppTheme.buttonTextStyle
-                                            .copyWith(fontSize: 12),
-                                      )));
-                            });
-                          }
-                        },
+                            },
+                        )
+                        
                       ),
                       Gap(MediaQuery.paddingOf(context).bottom + 20)
                     ],

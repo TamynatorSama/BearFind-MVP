@@ -131,20 +131,7 @@ class _CustomTextfieldState extends State<CustomTextfield> {
               border: UnderlineInputBorder(borderSide: BorderSide(width: 1,color: AppTheme.accentColor)),
               hintStyle: widget.customTextStyle ??
                   AppTheme.formTextStyle.copyWith(color: AppTheme.accentColor),
-              prefixIcon: widget.prefixIcon == null
-                  ? null
-                  : Container(
-                      constraints: BoxConstraints(
-                              maxWidth: widget.suffixMaxWidth ?? 70),
-                      // height: 10,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          border: widget.prefixBorders
-                              ? Border(
-                                  right: BorderSide(
-                                      width: 2, color: AppTheme.accentColor))
-                              : null),
-                      child: widget.prefixIcon),
+              prefix: widget.prefixIcon,
               suffixIcon: widget.isPassword
                   ? Container(
                       padding: const EdgeInsets.all(14),

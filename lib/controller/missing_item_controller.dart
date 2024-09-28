@@ -61,27 +61,29 @@ class MissingItemController extends ChangeNotifier {
           });
           Stream<SSEModel>? stream =
               SseHandler().createConnection(itemID: item?.itemId ?? "");
-              if(stream == null){
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              backgroundColor: AppTheme.primaryColor,
-              content: Text(
-                "unable to process request",
-                style: AppTheme.buttonTextStyle.copyWith(fontSize: 12),
-              )));
-              }
-          sseStream = stream?.listen((data) => handleStream(data,errorCallback:(){
+          if (stream == null) {
             Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              backgroundColor: AppTheme.primaryColor,
-              content: Text(
-                "unable to process request",
-                style: AppTheme.buttonTextStyle.copyWith(fontSize: 12),
-              )));
-          }, callback: () {
-                Navigator.pop(context);
-                itemFound(context, item: item!,code: code);
-              }));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                backgroundColor: AppTheme.primaryColor,
+                content: Text(
+                  "unable to process request",
+                  style: AppTheme.buttonTextStyle.copyWith(fontSize: 12),
+                )));
+          }
+          sseStream =
+              stream?.listen((data) => handleStream(data, errorCallback: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: AppTheme.primaryColor,
+                        content: Text(
+                          "unable to process request",
+                          style:
+                              AppTheme.buttonTextStyle.copyWith(fontSize: 12),
+                        )));
+                  }, callback: () {
+                    Navigator.pop(context);
+                    itemFound(context, item: item!, code: code);
+                  }));
         } catch (e) {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -95,17 +97,16 @@ class MissingItemController extends ChangeNotifier {
     });
   }
 
-  handleStream(SSEModel value, {Function()? callback,Function()? errorCallback}) {
+  handleStream(SSEModel value,
+      {Function()? callback, Function()? errorCallback}) {
     if (value.data != null) {
       final possibleJson = jsonDecode(value.data!);
-      
+
       notifyListeners();
       try {
-        code = possibleJson["data"]["is_found"];
         item = LostItem.fromJson(possibleJson["data"]["item_info"]);
         code = possibleJson["data"]["claim_code"];
       } catch (e) {
-        
         close();
         errorCallback?.call();
       }

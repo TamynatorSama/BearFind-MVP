@@ -9,25 +9,30 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
+  static GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Bear Find',
         debugShowMaterialGrid: false,
+        navigatorKey: navKey,
         debugShowCheckedModeBanner: false,
         // theme: ThemeData(
         //   scaffoldBackgroundColor: Colors.white,
         //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.black,primary: Colors.black),
         //   useMaterial3: true,
         // ),
-        home: 
-        AuthRepository.instance.token.isEmpty?
-         const EmailWidget()
-        :const ActionSelector()
-        );
+        home: AuthRepository.instance.token.isEmpty
+            ? const EmailWidget()
+            : const ActionSelector());
   }
 }
