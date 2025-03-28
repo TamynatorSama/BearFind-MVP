@@ -99,6 +99,7 @@ class _ItemListingState extends State<ItemListing>
                       ),
                     ]),
               ),
+              
               Expanded(
                 child: isLoading
                     ? Center(

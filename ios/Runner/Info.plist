@@ -22,7 +22,18 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This permisstion is needed for image upload</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This permisstion is needed for image upload</string>
+	<string>This permission is needed for image upload</string>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Needed to get info of images upload for better result</string>
+
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Needed to get info of images upload for better result</string>
+
+
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Needed to get info of images upload for better result</string>
+	
 
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>

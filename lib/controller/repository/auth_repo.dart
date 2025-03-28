@@ -45,8 +45,9 @@ class AuthRepository {
     walletAmount = double.tryParse(_preferences.getString("wallet") ?? "");
   }
 
-  Future<RepositoryResult<List>> login(
-      {required String email,}) async {
+  Future<RepositoryResult<List>> login({
+    required String email,
+  }) async {
     try {
       return await BaseApi.instance.dio.post("/login", data: {
         "email": email,
@@ -68,6 +69,7 @@ class AuthRepository {
           status: false,
           result: []);
     } catch (e) {
+      print(e);
       return const RepositoryResult(
           message: "Failed to process request", status: false, result: []);
     }
