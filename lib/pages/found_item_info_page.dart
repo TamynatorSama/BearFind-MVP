@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -14,7 +15,11 @@ import 'package:lost_items/reusables/custom_btn.dart';
 import 'package:lost_items/reusables/custom_textfield.dart';
 import 'package:lost_items/utils/app_theme.dart';
 import 'package:lost_items/utils/decimal_formatter.dart';
+import 'package:lost_items/utils/get_location.dart';
 import 'package:lost_items/utils/image_upload_notifier.dart';
+import 'package:native_exif/native_exif.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 
 class FoundItemInfoPage extends StatefulWidget {
   final bool forLostItem;
@@ -55,12 +60,44 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
   }
 
   addImage() async {
+    ({double? lat, double? lon})? latLon = await getLocation();
+
     ImagePicker _picker = ImagePicker();
-    await _picker.pickImage(source: ImageSource.gallery).then((value) {
+    await _picker.pickImage(source: ImageSource.gallery).then((value) async {
       if (value != null) {
-        selectedImages.add(value);
+        Exif exif = await Exif.fromPath(value.path);
+        final latInfo = await exif.getLatLong();
+        if (latLon == null && latInfo == null) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: AppTheme.primaryColor,
+              content: Text(
+                "Allow location to help better your search",
+                style: AppTheme.buttonTextStyle.copyWith(fontSize: 12),
+              )));
+          return;
+        }
+        if (latInfo == null) {
+          await exif.writeAttributes({
+            'GPSLatitude': latLon!.lat ?? 0,
+            // 'GPSLatitudeRef': 'N',
+            'GPSLongitude': latLon.lon ?? 0,
+            // 'GPSLongitudeRef': 'W',
+          });
+        }
+
+        final dir = await getApplicationDocumentsDirectory();
+
+        final newPath = p.join(dir.path, p.basename(value.path));
+
+
+        final newFile = File(newPath);
+        await newFile.writeAsBytes(await value.readAsBytes());
+
+        final newXFile = XFile(newPath);
+
+        selectedImages.add(newXFile);
         imageUploader.uploadMultipleImagesNative(context,
-            imageFiles: [value.path]).then((value) {
+            imageFiles: [newXFile.path]).then((value) {
           processedImages = [...processedImages, ...value];
         });
         setState(() {});
@@ -127,7 +164,7 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
                       CustomTextfield(
                         label: "Describe your item",
                         controller: descriptionController,
-                      validator: widget.forLostItem ?null:(val)=>null,
+                        validator: widget.forLostItem ? null : (val) => null,
                       ),
                       // ],
                       if (!widget.forLostItem) ...[
@@ -263,7 +300,8 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
                           CustomTextfield(
                             label: "Tip",
                             controller: tipController,
-                            prefixIcon: Text("\$",style:AppTheme.formTextStyle),
+                            prefixIcon:
+                                Text("\$", style: AppTheme.formTextStyle),
                             inputFormatter: [decimalFormatter],
                             inputType: TextInputType.number,
                           ),
@@ -345,64 +383,70 @@ class _FoundItemInfoPageState extends State<FoundItemInfoPage> {
 
                       const Gap(48),
                       AnimatedBuilder(
-                        animation: imageUploader,
-                        builder: (context, _) => CustomButton(
-                            text:
-                                widget.forLostItem ? "Find item" : "Find the Owner",
-                            // onTap: ()=>lookForMatch(context),
-                            isDisactivated: imageUploader.percentage !=0,
-                            // onTap: ()=>itemFound(context),
-                            onTap: () async {
-                              if (!_form.currentState!.validate()) return;
-                              if (widget.forLostItem) {
-                                missingController.lookForItem(context,
-                                    description: descriptionController.text,
-                                    images: processedImages,
-                                    color: colorController.text,
-                                    lastSeenLocation: locationController.text,
-                                    tip: tipController.text);
-                              } else {
-                                if (processedImages.isEmpty) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                          backgroundColor: AppTheme.primaryColor,
-                                          content: Text(
-                                            "upload an image to continue",
-                                            style: AppTheme.buttonTextStyle
-                                                .copyWith(fontSize: 12),
-                                          )));
-                                  return;
-                                }
-                                await FoundItemRepo()
-                                    .reportFoundItem(
+                          animation: imageUploader,
+                          builder: (context, _) => CustomButton(
+                                text: widget.forLostItem
+                                    ? "Find item"
+                                    : "Find the Owner",
+                                // onTap: ()=>lookForMatch(context),
+                                isDisactivated: imageUploader.percentage != 0,
+                                // onTap: ()=>itemFound(context),
+                                onTap: () async {
+                                  if (!_form.currentState!.validate()) return;
+                                  if (widget.forLostItem) {
+                                    missingController.lookForItem(context,
                                         description: descriptionController.text,
-                                        lastSeenLocation: locationController.text,
                                         images: processedImages,
                                         color: colorController.text,
-                                        other: othersController.text,
-                                        dateFound: (dateFound ?? DateTime.now())
-                                            .copyWith(
-                                                hour: timeOfDay.hour,
-                                                minute: timeOfDay.minute))
-                                    .then((value) {
-                                  if (value.status) {
-                                    itemSubmitted(context, item: value.result!);
-                                    return;
+                                        lastSeenLocation:
+                                            locationController.text,
+                                        tip: tipController.text);
+                                  } else {
+                                    if (processedImages.isEmpty) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              backgroundColor:
+                                                  AppTheme.primaryColor,
+                                              content: Text(
+                                                "upload an image to continue",
+                                                style: AppTheme.buttonTextStyle
+                                                    .copyWith(fontSize: 12),
+                                              )));
+                                      return;
+                                    }
+                                    await FoundItemRepo()
+                                        .reportFoundItem(
+                                            description:
+                                                descriptionController.text,
+                                            lastSeenLocation:
+                                                locationController.text,
+                                            images: processedImages,
+                                            color: colorController.text,
+                                            other: othersController.text,
+                                            dateFound: (dateFound ??
+                                                    DateTime.now())
+                                                .copyWith(
+                                                    hour: timeOfDay.hour,
+                                                    minute: timeOfDay.minute))
+                                        .then((value) {
+                                      if (value.status) {
+                                        itemSubmitted(context,
+                                            item: value.result!);
+                                        return;
+                                      }
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              backgroundColor:
+                                                  AppTheme.primaryColor,
+                                              content: Text(
+                                                value.message,
+                                                style: AppTheme.buttonTextStyle
+                                                    .copyWith(fontSize: 12),
+                                              )));
+                                    });
                                   }
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                          backgroundColor: AppTheme.primaryColor,
-                                          content: Text(
-                                            value.message,
-                                            style: AppTheme.buttonTextStyle
-                                                .copyWith(fontSize: 12),
-                                          )));
-                                });
-                              }
-                            },
-                        )
-                        
-                      ),
+                                },
+                              )),
                       Gap(MediaQuery.paddingOf(context).bottom + 20)
                     ],
                   )),

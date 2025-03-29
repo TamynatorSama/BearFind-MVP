@@ -7,6 +7,7 @@ import 'package:lost_items/pages/listing_page.dart';
 import 'package:lost_items/reusables/app_padding_wrapper.dart';
 import 'package:lost_items/reusables/expandable_scrollable_widget.dart';
 import 'package:lost_items/utils/app_theme.dart';
+import 'package:lost_items/utils/get_location.dart';
 
 class ActionSelector extends StatefulWidget {
   const ActionSelector({super.key});
@@ -17,14 +18,20 @@ class ActionSelector extends StatefulWidget {
 
 class _ActionSelectorState extends State<ActionSelector> {
   @override
+  void initState() {
+    getLocation();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.primaryColor,
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const ItemListing()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const ItemListing()));
         },
         child: SvgPicture.string(
             """<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="2" stroke-dashoffset="2" d="M4 5h0.01"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.1s" values="2;0"/></path><path stroke-dasharray="14" stroke-dashoffset="14" d="M8 5h12"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.1s" dur="0.2s" values="14;0"/></path><path stroke-dasharray="2" stroke-dashoffset="2" d="M4 10h0.01"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.3s" dur="0.1s" values="2;0"/></path><path stroke-dasharray="14" stroke-dashoffset="14" d="M8 10h12"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.4s" dur="0.2s" values="14;0"/></path><path stroke-dasharray="2" stroke-dashoffset="2" d="M4 15h0.01"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.1s" values="2;0"/></path><path stroke-dasharray="14" stroke-dashoffset="14" d="M8 15h12"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" values="14;0"/></path><path stroke-dasharray="2" stroke-dashoffset="2" d="M4 20h0.01"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.9s" dur="0.1s" values="2;0"/></path><path stroke-dasharray="14" stroke-dashoffset="14" d="M8 20h12"><animate fill="freeze" attributeName="stroke-dashoffset" begin="1s" dur="0.2s" values="14;0"/></path></g></svg>"""),
@@ -36,27 +43,32 @@ class _ActionSelectorState extends State<ActionSelector> {
             children: [
               Gap(MediaQuery.paddingOf(context).top + 40),
               SvgPicture.asset("assets/logo_new.svg"),
-
               const Gap(31),
               Text("Hi ${AuthRepository.instance.username}.",
                   style: AppTheme.headerTextStyle, textAlign: TextAlign.center),
-              if(AuthRepository.instance.walletAmount !=null && AuthRepository.instance.walletAmount !=0 )
-              ...[const Gap(12),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: ShapeDecoration(
-                      color: AppTheme.accentColorLight,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
-                    padding: const EdgeInsets.all(5),
-                    child: SvgPicture.asset("assets/wallet.svg"),
-                  ),
-                  const Gap(5),
-                  Text("${AuthRepository.instance.walletAmount??0}",style: AppTheme.headerTextStyle,),
-                ],
-              ),],
+              if (AuthRepository.instance.walletAmount != null &&
+                  AuthRepository.instance.walletAmount != 0) ...[
+                const Gap(12),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: ShapeDecoration(
+                          color: AppTheme.accentColorLight,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                      padding: const EdgeInsets.all(5),
+                      child: SvgPicture.asset("assets/wallet.svg"),
+                    ),
+                    const Gap(5),
+                    Text(
+                      "${AuthRepository.instance.walletAmount ?? 0}",
+                      style: AppTheme.headerTextStyle,
+                    ),
+                  ],
+                ),
+              ],
               const Gap(34),
               Column(
                 children: [
